@@ -25,6 +25,13 @@ public class PositionInfo implements LocationListener
     private LocationManager locationManager;
     private TelephonyManager teleman;
     GsmCellLocation cellLocation;
+
+    private static PositionInfo instance;
+    public static PositionInfo GetInstance()
+    {
+        return instance;
+    }
+
     public PositionInfo(Activity activity)
     {
         this.activity = activity;
@@ -32,7 +39,7 @@ public class PositionInfo implements LocationListener
                 activity.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
         teleman = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
-
+        instance = this;
     }
 
     public void ReadInfo()
