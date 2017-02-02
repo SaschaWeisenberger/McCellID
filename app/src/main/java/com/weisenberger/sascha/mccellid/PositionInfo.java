@@ -42,17 +42,19 @@ public class PositionInfo implements LocationListener
         instance = this;
     }
 
-    public void ReadInfo()
+    public String ReadInfo()
     {
         cellLocation = (GsmCellLocation) teleman.getCellLocation();
         if(null == cellLocation)
         {
             DebugOut.print(this, "No Cell Location");
-            return;
+            return "";
         }
         cellId = cellLocation.getCid() & 0xFFFF;
         lac = cellLocation.getLac() & 0xFFFF;
-        DebugOut.print(this, String.format("CellID, LAC, Hex: %X %X Dec: %d %d", cellId, lac, cellId, lac));
+        String output = String.format("CellID, LAC, Hex: %X %X Dec: %d %d", cellId, lac, cellId, lac);
+        DebugOut.print(this, output);
+        return output;
     }
 
     @Override
