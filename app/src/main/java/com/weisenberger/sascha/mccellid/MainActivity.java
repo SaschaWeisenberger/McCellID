@@ -2,12 +2,10 @@ package com.weisenberger.sascha.mccellid;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.graphics.PointF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity implements Runnable{
 
@@ -31,12 +29,21 @@ public class MainActivity extends AppCompatActivity implements Runnable{
             return;
         //final int counter = 0;
         final TextView tv = (TextView) findViewById(R.id.exampleText);
+        final DataStorage db = new DataStorage(this);
+
         while(true)
         {
-            tv.post(new Runnable() {
+            this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tv.setText(counter + " " + pi.ReadInfo());
+
+                    PointEntry liveData = pi.ReadCellInfo();
+                    PointEntry storedData = db.getPointFromID(liveData.Cell);
+                    if(null == storedData) {
+                        db.saveNewPosition(liveData);
+                        storedData = liveData;
+                    }
+                    tv.setText(storedData.toString());
                 }
             });
             try

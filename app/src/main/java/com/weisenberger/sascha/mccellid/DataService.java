@@ -52,7 +52,7 @@ public class DataService extends Service implements Runnable{
                     DebugOut.print(this, "No PositionInfo yet...", Level.WARNING);
                     return;
                 }
-                pi.ReadInfo();
+                pi.ReadCellInfo();
                 DebugOut.print(this, "Just read all info...", Level.INFO);
             }
             catch (Exception ex)

@@ -2,6 +2,8 @@ package com.weisenberger.sascha.mccellid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,6 +27,8 @@ public class PositionInfo implements LocationListener
     private LocationManager locationManager;
     private TelephonyManager teleman;
     GsmCellLocation cellLocation;
+    private double latitude, longitude;
+    private boolean gpsAvailable = false;
 
     private static PositionInfo instance;
     public static PositionInfo GetInstance()
@@ -42,19 +46,31 @@ public class PositionInfo implements LocationListener
         instance = this;
     }
 
-    public String ReadInfo()
+    public PointEntry ReadCellInfo()
     {
         cellLocation = (GsmCellLocation) teleman.getCellLocation();
         if(null == cellLocation)
         {
             DebugOut.print(this, "No Cell Location");
-            return "";
+            return null;
         }
         cellId = cellLocation.getCid() & 0xFFFF;
         lac = cellLocation.getLac() & 0xFFFF;
         String output = String.format("CellID, LAC, Hex: %X %X Dec: %d %d", cellId, lac, cellId, lac);
         DebugOut.print(this, output);
-        return output;
+        PointEntry pe = new PointEntry();
+        pe.Cell = (cellId << 16) + lac ;
+        return pe;
+    }
+
+    public PointF getGpsInfo()
+    {
+        if(!gpsAvailable)
+            return null;
+        PointF gps = new PointF();
+        gps.x = (float) longitude;
+        gps.y = (float) latitude;
+        return gps;
     }
 
     @Override
@@ -62,6 +78,8 @@ public class PositionInfo implements LocationListener
         DebugOut.print(this, "Location changed", Level.INFO);
         DebugOut.print(this, String.format("Current GPS Position: %f,%f", location.getLatitude(), location.getLongitude()), Level.INFO);
         DebugOut.print(this, String.format("Current Accuracy: %f", location.getAccuracy()), Level.INFO);
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();
     }
 
     @Override
