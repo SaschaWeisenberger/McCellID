@@ -78,6 +78,7 @@ public class PositionInfo implements LocationListener
         DebugOut.print(this, "Location changed", Level.INFO);
         DebugOut.print(this, String.format("Current GPS Position: %f,%f", location.getLatitude(), location.getLongitude()), Level.INFO);
         DebugOut.print(this, String.format("Current Accuracy: %f", location.getAccuracy()), Level.INFO);
+        gpsAvailable = true;
         longitude = location.getLongitude();
         latitude = location.getLatitude();
     }

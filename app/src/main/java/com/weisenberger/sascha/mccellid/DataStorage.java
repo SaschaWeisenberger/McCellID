@@ -22,9 +22,9 @@ public class DataStorage extends SQLiteOpenHelper {
                 "CREATE TABLE " +
                     PointEntry.TABLE_KEY + " (" +
                         PointEntry.CELL_KEY + " INTEGER, " +
-                        PointEntry.LAT_KEY + "latitude REAL, " +
-                        PointEntry.LON_KEY + "longitude REAL, " +
-                        PointEntry.PIC_KEY + "picname TEXT)");
+                        PointEntry.LAT_KEY + " REAL, " +
+                        PointEntry.LON_KEY + " REAL, " +
+                        PointEntry.PIC_KEY + " TEXT)");
     }
 
     @Override
@@ -43,12 +43,18 @@ public class DataStorage extends SQLiteOpenHelper {
         values.put(PointEntry.PIC_KEY, pe.PictureName);
         db.insert(PointEntry.TABLE_KEY, null, values);
         db.close();
+        DebugOut.print(this, "Stored new Position: " + pe.toString());
     }
 
     public PointEntry getPointFromID(int id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(PointEntry.TABLE_KEY, null, PointEntry.CELL_KEY + "=" + id, null, null, null, null, null);
+        Cursor cursor = db.query(
+                PointEntry.TABLE_KEY,
+                null,
+                PointEntry.CELL_KEY + "=?",
+                new String[]{String.valueOf(id)},
+                null, null, null, null);
         if(0 == cursor.getCount())
             return null;
         cursor.moveToFirst();
@@ -57,8 +63,26 @@ public class DataStorage extends SQLiteOpenHelper {
         pe.Latitude = cursor.getFloat(1);
         pe.Longitude = cursor.getFloat(2);
         pe.PictureName = cursor.getString(3);
+        cursor.close();
         db.close();
+        DebugOut.print(this, "Read Position: " + pe.toString());
 
         return pe;
+    }
+
+    public void updatepoint(PointEntry pe)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PointEntry.LAT_KEY, pe.Latitude);
+        values.put(PointEntry.LON_KEY, pe.Longitude);
+        values.put(PointEntry.PIC_KEY, pe.PictureName);
+        db.update(PointEntry.TABLE_KEY,
+                values,
+                PointEntry.CELL_KEY + "=?",
+                new String[]{String.valueOf(pe.Cell)});
+        db.close();
+
+        DebugOut.print(this, "Updated Position: " + pe.toString());
     }
 }

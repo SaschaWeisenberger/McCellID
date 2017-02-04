@@ -36,13 +36,20 @@ public class MainActivity extends AppCompatActivity implements Runnable{
             this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
+                    PointF gps = pi.getGpsInfo();
                     PointEntry liveData = pi.ReadCellInfo();
                     PointEntry storedData = db.getPointFromID(liveData.Cell);
                     if(null == storedData) {
                         db.saveNewPosition(liveData);
                         storedData = liveData;
                     }
+                    if(storedData.Latitude == 0 && null != gps)
+                    {
+                        storedData.Longitude = gps.x;
+                        storedData.Latitude = gps.y;
+                        db.updatepoint(storedData);
+                    }
+
                     tv.setText(storedData.toString());
                 }
             });

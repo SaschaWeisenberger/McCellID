@@ -19,9 +19,9 @@ public class PointEntry {
     @Override
     public String toString()
     {
-        return "Cell ID: " + (Cell >> 16) + "\n" +
-                "Lac    : " + (Cell & 0xFFFF) + "\n" +
-                "Long   : " + Longitude + "'E\n" +
-                "Lat    : " + Latitude + "'N\n";
+        return "Cell ID\t: " + ((Cell >> 16)&0xFFFF) + "\n" +
+                "Lac    \t: " + (Cell & 0xFFFF) + "\n" +
+                "Long   \t: " + Longitude + "'E\n" +
+                "Lat    \t: " + Latitude + "'N\n";
     }
 }
