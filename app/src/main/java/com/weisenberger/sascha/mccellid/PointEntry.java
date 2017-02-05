@@ -38,6 +38,6 @@ public class PointEntry implements Serializable {
         int cell, lac;
         cell = ((Cell >> 16)&0xFFFF);
         lac = (Cell & 0xFFFF);
-        return Integer.toHexString(cell)+ ":" + Integer.toHexString(lac) + " " + Longitude + "'E:" + Latitude + "'N\n";
+        return Integer.toHexString(cell)+ ":" + Integer.toHexString(lac) + " " + Longitude + "'E:" + Latitude + "'N (" + Location + ")\n";
     }
 }
