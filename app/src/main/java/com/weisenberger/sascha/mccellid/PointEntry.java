@@ -11,11 +11,13 @@ public class PointEntry implements Serializable {
     public float Latitude;
     public float Longitude;
     public String PictureName;
+    public String Location;
 
     public static final String CELL_KEY = "cellcode";
     public static final String LAT_KEY = "latitude";
     public static final String LON_KEY = "longitude";
     public static final String PIC_KEY = "picname";
+    public static final String LOC_KEY = "location";
     public static final String TABLE_KEY = "positionentry";
 
     @Override
@@ -27,7 +29,8 @@ public class PointEntry implements Serializable {
         return "Cell ID\t: " + cell + "/" + Integer.toHexString(cell) + "\n" +
                 "Lac    \t: " + lac + "/" + Integer.toHexString(lac) +"\n" +
                 "Long   \t: " + Longitude + "'E\n" +
-                "Lat    \t: " + Latitude + "'N\n";
+                "Lat    \t: " + Latitude + "'N\n" +
+                "Location\t: " + Location + "\n";
     }
 
     public String toFlatString()

@@ -13,7 +13,7 @@ import java.util.Vector;
 
 public class DataStorage extends SQLiteOpenHelper {
     public DataStorage(Context context) {
-        super(context, "positionsdb", null, 1);
+        super(context, "positionsdb", null, 2);
     }
 
     @Override
@@ -24,7 +24,8 @@ public class DataStorage extends SQLiteOpenHelper {
                         PointEntry.CELL_KEY + " INTEGER, " +
                         PointEntry.LAT_KEY + " REAL, " +
                         PointEntry.LON_KEY + " REAL, " +
-                        PointEntry.PIC_KEY + " TEXT)");
+                        PointEntry.PIC_KEY + " TEXT, " +
+                        PointEntry.LOC_KEY + " TEXT)");
     }
 
     @Override
@@ -41,6 +42,7 @@ public class DataStorage extends SQLiteOpenHelper {
         values.put(PointEntry.LAT_KEY, pe.Latitude);
         values.put(PointEntry.LON_KEY, pe.Longitude);
         values.put(PointEntry.PIC_KEY, pe.PictureName);
+        values.put(PointEntry.LOC_KEY, pe.Location);
         db.insert(PointEntry.TABLE_KEY, null, values);
         db.close();
         DebugOut.print(this, "Stored new Position: " + pe.toString());
@@ -75,6 +77,7 @@ public class DataStorage extends SQLiteOpenHelper {
         values.put(PointEntry.LAT_KEY, pe.Latitude);
         values.put(PointEntry.LON_KEY, pe.Longitude);
         values.put(PointEntry.PIC_KEY, pe.PictureName);
+        values.put(PointEntry.LOC_KEY, pe.Location);
         db.update(PointEntry.TABLE_KEY,
                 values,
                 PointEntry.CELL_KEY + "=?",
@@ -115,6 +118,7 @@ public class DataStorage extends SQLiteOpenHelper {
         pe.Latitude = cursor.getFloat(1);
         pe.Longitude = cursor.getFloat(2);
         pe.PictureName = cursor.getString(3);
+        pe.Location = cursor.getString(4);
         return pe;
     }
 }
