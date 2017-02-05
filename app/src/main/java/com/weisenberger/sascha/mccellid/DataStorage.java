@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Point;
+import java.util.Vector;
 
 /**
  * Created by Sascha on 02.02.2017.
@@ -55,14 +55,12 @@ public class DataStorage extends SQLiteOpenHelper {
                 PointEntry.CELL_KEY + "=?",
                 new String[]{String.valueOf(id)},
                 null, null, null, null);
-        if(0 == cursor.getCount())
+        if(0 == cursor.getCount()) {
+            cursor.close();
             return null;
+        }
         cursor.moveToFirst();
-        PointEntry pe = new PointEntry();
-        pe.Cell = cursor.getInt(0);
-        pe.Latitude = cursor.getFloat(1);
-        pe.Longitude = cursor.getFloat(2);
-        pe.PictureName = cursor.getString(3);
+        PointEntry pe = pointFromCursor(cursor);
         cursor.close();
         db.close();
         DebugOut.print(this, "Read Position: " + pe.toString());
@@ -84,5 +82,39 @@ public class DataStorage extends SQLiteOpenHelper {
         db.close();
 
         DebugOut.print(this, "Updated Position: " + pe.toString());
+    }
+
+    public Vector<PointEntry> getAllPoints()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(PointEntry.TABLE_KEY, null, null, null, null, null, PointEntry.CELL_KEY);
+        Vector<PointEntry> allPoints = new Vector<>();
+
+        if(0 == cursor.getCount())
+        {
+            cursor.close();
+            return allPoints;
+        }
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast())
+        {
+            PointEntry pe = pointFromCursor(cursor);
+            allPoints.add(pe);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        return allPoints;
+    }
+
+    private PointEntry pointFromCursor(Cursor cursor)
+    {
+        PointEntry pe = new PointEntry();
+        pe.Cell = cursor.getInt(0);
+        pe.Latitude = cursor.getFloat(1);
+        pe.Longitude = cursor.getFloat(2);
+        pe.PictureName = cursor.getString(3);
+        return pe;
     }
 }

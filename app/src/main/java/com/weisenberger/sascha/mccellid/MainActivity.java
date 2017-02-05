@@ -1,67 +1,63 @@
 package com.weisenberger.sascha.mccellid;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PointF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements Runnable{
+import java.util.logging.Level;
 
+public class MainActivity extends AppCompatActivity {
+
+    private static MainActivity instance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_main);
         getSystemService(Context.TELEPHONY_SERVICE);
 
         new PositionInfo(this);
         Intent serviceIntent = new Intent(this, DataService.class);
-        //startService(serviceIntent);
-        new Thread(this).start();
+        startService(serviceIntent);
+        registerReceiver(broadcastReceiver, new IntentFilter(DataService.RETRIEVE_DATA_INTENT));
     }
 
-    private static int counter = 0;
     @Override
-    public void run() {
-        final PositionInfo pi = PositionInfo.GetInstance();
-        if(null == pi)
-            return;
-        //final int counter = 0;
-        final TextView tv = (TextView) findViewById(R.id.exampleText);
-        final DataStorage db = new DataStorage(this);
+    protected void onDestroy(){
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
 
-        while(true)
-        {
-            this.runOnUiThread(new Runnable() {
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, final Intent intent) {
+            DebugOut.print(this, "Received intent:" + intent.getAction(), Level.INFO);
+            final PositionInfo pi = PositionInfo.GetInstance();
+            if(null == pi)
+                return;
+
+            final TextView tv = (TextView) findViewById(R.id.exampleText);
+            final DataStorage db = new DataStorage(instance);
+            instance.runOnUiThread( new Runnable() {
                 @Override
                 public void run() {
-                    PointF gps = pi.getGpsInfo();
-                    PointEntry liveData = pi.ReadCellInfo();
-                    PointEntry storedData = db.getPointFromID(liveData.Cell);
-                    if(null == storedData) {
-                        db.saveNewPosition(liveData);
-                        storedData = liveData;
-                    }
-                    if(storedData.Latitude == 0 && null != gps)
+                    DebugOut.print(this, "run on ui thread", Level.INFO);
+                    PointEntry currentPoint = (PointEntry) intent.getExtras().get("point");
+                    if(null == currentPoint)
+                        return;
+                    String text = currentPoint.toString();
+                    for (PointEntry p : db.getAllPoints())
                     {
-                        storedData.Longitude = gps.x;
-                        storedData.Latitude = gps.y;
-                        db.updatepoint(storedData);
+                        text += p.toFlatString();
                     }
-
-                    tv.setText(storedData.toString());
+                    tv.setText(text);
                 }
             });
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch (Exception ex)
-            {
-                return;
-            }
-            counter++;
         }
-    }
+    };
 }

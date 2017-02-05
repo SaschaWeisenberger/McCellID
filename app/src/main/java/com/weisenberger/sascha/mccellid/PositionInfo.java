@@ -21,7 +21,7 @@ import java.util.logging.Level;
 
 public class PositionInfo implements LocationListener
 {
-    private Activity activity;
+    private Context context;
     private int cellId = 0;
     private int lac = 0;
     private LocationManager locationManager;
@@ -29,6 +29,7 @@ public class PositionInfo implements LocationListener
     GsmCellLocation cellLocation;
     private double latitude, longitude;
     private boolean gpsAvailable = false;
+    private PointEntry currentPoint;
 
     private static PositionInfo instance;
     public static PositionInfo GetInstance()
@@ -36,13 +37,13 @@ public class PositionInfo implements LocationListener
         return instance;
     }
 
-    public PositionInfo(Activity activity)
+    public PositionInfo(Context context)
     {
-        this.activity = activity;
+        this.context = context;
         locationManager = (LocationManager)
-                activity.getSystemService(Context.LOCATION_SERVICE);
+                context.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
-        teleman = (TelephonyManager)activity.getSystemService(Context.TELEPHONY_SERVICE);
+        teleman = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         instance = this;
     }
 
@@ -112,5 +113,13 @@ public class PositionInfo implements LocationListener
     public void onProviderDisabled(String provider) {
         DebugOut.print(this, "Provider " + provider + " disabled", Level.INFO);
 
+    }
+
+    public PointEntry getCurrentPosition() {
+        return currentPoint;
+    }
+
+    public void setCurrentPosition(PointEntry pe) {
+        currentPoint = pe;
     }
 }

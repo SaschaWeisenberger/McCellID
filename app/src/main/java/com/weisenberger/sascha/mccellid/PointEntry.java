@@ -1,10 +1,12 @@
 package com.weisenberger.sascha.mccellid;
 
+import java.io.Serializable;
+
 /**
  * Created by Sascha on 04.02.2017.
  */
 
-public class PointEntry {
+public class PointEntry implements Serializable {
     public int Cell;
     public float Latitude;
     public float Longitude;
@@ -19,9 +21,20 @@ public class PointEntry {
     @Override
     public String toString()
     {
-        return "Cell ID\t: " + ((Cell >> 16)&0xFFFF) + "\n" +
-                "Lac    \t: " + (Cell & 0xFFFF) + "\n" +
+        int cell, lac;
+        cell = ((Cell >> 16)&0xFFFF);
+        lac = (Cell & 0xFFFF);
+        return "Cell ID\t: " + cell + "/" + Integer.toHexString(cell) + "\n" +
+                "Lac    \t: " + lac + "/" + Integer.toHexString(lac) +"\n" +
                 "Long   \t: " + Longitude + "'E\n" +
                 "Lat    \t: " + Latitude + "'N\n";
+    }
+
+    public String toFlatString()
+    {
+        int cell, lac;
+        cell = ((Cell >> 16)&0xFFFF);
+        lac = (Cell & 0xFFFF);
+        return Integer.toHexString(cell)+ ":" + Integer.toHexString(lac) + " " + Longitude + "'E:" + Latitude + "'N\n";
     }
 }
