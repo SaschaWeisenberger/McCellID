@@ -18,7 +18,7 @@ public class DebugOut {
 //    public static final Level FINEST = new Level("FINEST", 300, defaultBundle);
 //    public static final Level ALL = new Level("ALL", Integer.MIN_VALUE, defaultBundle);
 
-    public static Level currentDebugLevel = Level.ALL;
+    public static Level currentDebugLevel = Level.WARNING;
 
 
     public static void print(Object instance, String text){

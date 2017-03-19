@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayOutputStream;
 import java.util.Vector;
 
 /**
@@ -13,7 +17,7 @@ import java.util.Vector;
 
 public class DataStorage extends SQLiteOpenHelper {
     public DataStorage(Context context) {
-        super(context, "positionsdb", null, 2);
+        super(context, "positionsdb", null, 3);
     }
 
     @Override
@@ -24,7 +28,7 @@ public class DataStorage extends SQLiteOpenHelper {
                         PointEntry.CELL_KEY + " INTEGER, " +
                         PointEntry.LAT_KEY + " REAL, " +
                         PointEntry.LON_KEY + " REAL, " +
-                        PointEntry.PIC_KEY + " TEXT, " +
+                        PointEntry.PIC_KEY + " BLOB, " +
                         PointEntry.LOC_KEY + " TEXT)");
     }
 
@@ -41,7 +45,7 @@ public class DataStorage extends SQLiteOpenHelper {
         values.put(PointEntry.CELL_KEY, pe.Cell);
         values.put(PointEntry.LAT_KEY, pe.Latitude);
         values.put(PointEntry.LON_KEY, pe.Longitude);
-        values.put(PointEntry.PIC_KEY, pe.PictureName);
+        values.put(PointEntry.PIC_KEY, pe.imageBytes);
         values.put(PointEntry.LOC_KEY, pe.Location);
         db.insert(PointEntry.TABLE_KEY, null, values);
         db.close();
@@ -76,7 +80,7 @@ public class DataStorage extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(PointEntry.LAT_KEY, pe.Latitude);
         values.put(PointEntry.LON_KEY, pe.Longitude);
-        values.put(PointEntry.PIC_KEY, pe.PictureName);
+        values.put(PointEntry.PIC_KEY, pe.imageBytes);
         values.put(PointEntry.LOC_KEY, pe.Location);
         db.update(PointEntry.TABLE_KEY,
                 values,
@@ -117,8 +121,15 @@ public class DataStorage extends SQLiteOpenHelper {
         pe.Cell = cursor.getInt(0);
         pe.Latitude = cursor.getFloat(1);
         pe.Longitude = cursor.getFloat(2);
-        pe.PictureName = cursor.getString(3);
+        pe.imageBytes = cursor.getBlob(3);
         pe.Location = cursor.getString(4);
         return pe;
+    }
+
+    public void setPicture(Bitmap takenPicture, int cell)
+    {
+        PointEntry pe = getPointFromID(cell);
+        pe.setImage(takenPicture);
+        updatepoint(pe);
     }
 }

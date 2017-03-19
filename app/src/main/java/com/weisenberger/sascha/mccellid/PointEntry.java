@@ -1,5 +1,9 @@
 package com.weisenberger.sascha.mccellid;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
 /**
@@ -10,15 +14,19 @@ public class PointEntry implements Serializable {
     public int Cell;
     public float Latitude;
     public float Longitude;
-    public String PictureName;
+    //public String PictureName;
     public String Location;
+    //public Bitmap MiniPic;
+    public byte[] imageBytes = new byte[]{};
+
 
     public static final String CELL_KEY = "cellcode";
     public static final String LAT_KEY = "latitude";
     public static final String LON_KEY = "longitude";
-    public static final String PIC_KEY = "picname";
+    public static final String PIC_KEY = "picture";
     public static final String LOC_KEY = "location";
     public static final String TABLE_KEY = "positionentry";
+
 
     @Override
     public String toString()
@@ -39,5 +47,25 @@ public class PointEntry implements Serializable {
         cell = ((Cell >> 16)&0xFFFF);
         lac = (Cell & 0xFFFF);
         return Integer.toHexString(cell)+ ":" + Integer.toHexString(lac) + " " + Longitude + "'E:" + Latitude + "'N (" + Location + ")\n";
+    }
+
+    private static byte[] getBytes(Bitmap bitmap)
+    {
+        if(null == bitmap)
+            return  new byte[]{};
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    public Bitmap getImage() {
+        if(null == imageBytes || 0 == imageBytes.length)
+            return null;
+        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+    }
+
+    public void setImage(Bitmap image)
+    {
+        imageBytes = getBytes(image);
     }
 }
