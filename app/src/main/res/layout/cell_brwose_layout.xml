@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_margin="10px">
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/infoTable">
+        <TableRow>
+            <TextView android:text="Cell:"/>
+            <TextView android:id="@+id/browseCell"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="Postion:"/>
+            <TextView android:id="@+id/browsePosition"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="Name:"/>
+            <TextView android:id="@+id/browseName"/>
+        </TableRow>
+    </TableLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5px"
+        android:layout_alignParentRight="true"
+        android:id="@+id/browsePicture"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/infoTable"
+        android:id="@+id/browseButtonRow"
+        android:visibility="gone">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove"
+            android:id="@+id/browseRemove"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rename"
+            android:id="@+id/browseRename"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rem. Picture"
+            android:id="@+id/browseRemPic"/>
+    </LinearLayout>
+</RelativeLayout>

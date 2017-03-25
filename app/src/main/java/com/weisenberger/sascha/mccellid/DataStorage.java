@@ -91,6 +91,15 @@ public class DataStorage extends SQLiteOpenHelper {
         DebugOut.print(this, "Updated Position: " + pe.toString());
     }
 
+    public void deletePoint(PointEntry pe)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(PointEntry.TABLE_KEY,
+                PointEntry.CELL_KEY + "=?", new String[]{Integer.toString(pe.Cell)});
+        db.close();
+    }
+
     public Vector<PointEntry> getAllPoints()
     {
         SQLiteDatabase db = getReadableDatabase();
