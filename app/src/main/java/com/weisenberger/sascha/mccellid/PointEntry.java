@@ -14,9 +14,7 @@ public class PointEntry implements Serializable {
     public int Cell;
     public float Latitude;
     public float Longitude;
-    //public String PictureName;
     public String Location;
-    //public Bitmap MiniPic;
     public byte[] imageBytes = new byte[]{};
 
 

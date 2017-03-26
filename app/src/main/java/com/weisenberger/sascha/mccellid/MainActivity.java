@@ -177,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements NameInputHandler,
     private void UpdateEntry(PointEntry pe)
     {
         int cellsCount = llBrowse.getChildCount();
-        boolean found = false;
         for (int cellIndex = 0; cellIndex < cellsCount; cellIndex++)
         {
             CellBrowseLayout cbl = (CellBrowseLayout)llBrowse.getChildAt(cellIndex);
@@ -187,11 +186,11 @@ public class MainActivity extends AppCompatActivity implements NameInputHandler,
             }
             if(cbl.myPoint.Cell == pe.Cell) {
                 cbl.upateValues(pe);
-                found = true;
+                return;
             }
         }
-        if(!found)
-            llBrowse.addView(new CellBrowseLayout(this, pe));
+
+        llBrowse.addView(new CellBrowseLayout(this, pe));
     }
 
 
